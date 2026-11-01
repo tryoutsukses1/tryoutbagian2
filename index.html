@@ -1534,7 +1534,9 @@ document.addEventListener('DOMContentLoaded', () => {
         // Simpan hasil ke Supabase tanpa menghambat tampilan hasil lokal.
         saveResultToSupabase({ total, twkScore, tiuScore, tkpScore, isLulus }).catch(err => {
             console.error('Gagal menyimpan hasil ke Supabase:', err);
-            document.getElementById('ranking-status').textContent = 'Hasil lokal tampil, tetapi belum tersimpan ke ranking nasional.';
+            const detail = (err && (err.message || err.details || err.hint)) ? ' [' + (err.code ? err.code + ': ' : '') + (err.message || err.details || err.hint) + ']' : '';
+            document.getElementById('ranking-status').textContent = 'Hasil lokal tampil, tetapi belum tersimpan/dimuat di ranking nasional.' + detail;
+            document.getElementById('ranking-table-body').innerHTML = '<tr><td colspan="6" class="py-8 text-center text-slate-400">Ranking belum dapat dimuat.</td></tr>';
         });
 
         setTimeout(() => {
@@ -1564,12 +1566,7 @@ document.addEventListener('DOMContentLoaded', () => {
         examContainer.classList.add('hidden');
         resultPage.classList.remove('hidden');
         window.scrollTo(0,0);
-        if (SUPABASE_READY) {
-            loadNationalRanking().catch(err => {
-                console.error('Gagal memuat ranking:', err);
-                document.getElementById('ranking-status').textContent = 'Ranking nasional gagal dimuat. Periksa konfigurasi Supabase.';
-            });
-        }
+        // Ranking dimuat oleh saveResultToSupabase() setelah hasil tersimpan (hindari pemanggilan ganda/race condition).
         renderExplanation('all');
         showHasilAkhirPopup(isLulus);
     }
