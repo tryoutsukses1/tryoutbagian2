@@ -1664,7 +1664,7 @@ document.addEventListener('DOMContentLoaded', () => {
             });
             if (!rankError && rankData !== null && rankData !== undefined) {
                 rankEl.textContent = '#' + rankData;
-                status.textContent = 'Hasil Anda sudah tersimpan dan peringkat nasional telah diperbarui.';
+                status.textContent = '';
             } else {
                 rankEl.textContent = '-';
                 status.textContent = 'Hasil tersimpan. Peringkat akan tampil setelah fungsi ranking aktif.';
